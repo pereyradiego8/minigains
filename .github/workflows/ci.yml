@@ -1,0 +1,41 @@
+name: Verificación de calidad
+
+on:
+  push:
+    branches:
+      - main
+      - 'audit/**'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: TypeScript, lint, tests y compilación
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Obtener código
+        uses: actions/checkout@v4
+      - name: Instalar Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.3.0'
+      - name: Instalar dependencias reproducibles
+        run: bun install --frozen-lockfile
+      - name: Comprobar tipos
+        run: bunx tsc --noEmit
+      - name: Analizar código
+        run: bun run lint
+      - name: Ejecutar tests
+        run: bun run test
+      - name: Compilar producción
+        run: bun run build
