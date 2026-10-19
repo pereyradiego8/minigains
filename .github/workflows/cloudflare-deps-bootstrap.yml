@@ -1,0 +1,44 @@
+name: Preparar dependencias para Workers (temporal)
+on:
+  push:
+    branches:
+      - infra/fase-3-cloudflare-workers
+    paths:
+      - .github/workflows/cloudflare-deps-bootstrap.yml
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: true
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.4.3'
+      - name: Instalar desde el lockfile original
+        run: bun install --frozen-lockfile
+      - name: Retirar el adaptador Nitro específico de Lovable
+        run: bun remove @lovable.dev/vite-tanstack-config nitro
+      - name: Instalar el adaptador oficial y Wrangler
+        run: bun add -d @cloudflare/vite-plugin wrangler
+      - name: Actualizar solo paquetes vulnerables si fuera necesario
+        run: bun audit fix
+      - name: Verificar seguridad y compatibilidad
+        run: |
+          bun audit --audit-level=moderate
+          bunx tsc --noEmit
+          bun run lint
+          bun run test
+          bun run build
+          node scripts/check-bundle-budget.mjs
+      - name: Registrar lockfile y dependencias probadas
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- package.json bun.lock
+          git diff --cached --quiet && { echo "No hay diferencias en las dependencias"; exit 1; }
+          git commit -m "build(cloudflare): registrar dependencias compatibles validadas"
+          git push origin HEAD:refs/heads/infra/fase-3-cloudflare-workers

@@ -40,4 +40,18 @@ Los importes son **referencias históricas**, no precios ni inventario en vivo. 
 
 ## Integración
 
-La configuración Vite actual usa el adaptador de Lovable/Nitro. La migración a Cloudflare Workers requiere un paso separado de configuración, despliegue y comprobación de compatibilidad. No existe publicación automática configurada desde este repositorio.
+El proyecto emplea el adaptador oficial `@cloudflare/vite-plugin` junto a `wrangler.jsonc`. Conserva `src/server.ts` como entrada personalizada para cabeceras de seguridad SSR.
+
+Para comprobar el build:
+```bash
+bun install --frozen-lockfile
+bun run build
+bun run deploy:check
+```
+Para publicar manualmente con sesión autorizada de Cloudflare:
+```bash
+bun run deploy
+```
+**La publicación desde GitHub requiere autorizar la Cloudflare GitHub App** en Workers & Pages → Worker MiniGains → Settings → Builds → Connect, si no existe la conexión. No agregues tokens de API en el repositorio.
+
+La cuenta actualmente no tiene zona de dominio personalizada. La preview en `*.workers.dev` debe mantenerse fuera del índice hasta definir el dominio definitivo `VITE_SITE_URL`. No habilitar pagos hasta conectar un proveedor seguro.

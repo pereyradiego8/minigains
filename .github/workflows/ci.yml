@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - 'audit/**'
+      - 'infra/**'
   pull_request:
     branches:
       - main
