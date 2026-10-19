@@ -54,4 +54,17 @@ bun run deploy
 ```
 **La publicación desde GitHub requiere autorizar la Cloudflare GitHub App** en Workers & Pages → Worker MiniGains → Settings → Builds → Connect, si no existe la conexión. No agregues tokens de API en el repositorio.
 
-La cuenta actualmente no tiene zona de dominio personalizada. La preview en `*.workers.dev` debe mantenerse fuera del índice hasta definir el dominio definitivo `VITE_SITE_URL`. No habilitar pagos hasta conectar un proveedor seguro.
+### Activación de Workers Builds
+
+La conexión Cloudflare ↔ GitHub para `pereyradiego8/minigains` ya fue autorizada y registrada. El Worker `minigains` existe, pero **no sirve todavía la aplicación real**. Se creó inicialmente sin ruta pública con una respuesta temporal HTTP 503 y `noindex`.
+
+Falta completar una sola vez la autorización del token de Workers Builds desde el panel de Cloudflare, porque el acceso OAuth de esta integración no permite generar tokens API. En [Workers & Pages](https://dash.cloudflare.com/?to=/:account/workers-and-pages), ingresar a `minigains` → **Settings → Builds → Connect** y seleccionar GitHub, repositorio `pereyradiego8/minigains`, rama `main`. Dejar:
+- Directorio raíz: `/`
+- Build command: `bun run build`
+- Deploy command: `bunx wrangler deploy`
+- Build token: **generar automáticamente en el panel** (no insertar en el repositorio)
+- Variables de build: mantener `VITE_SITE_URL` sin configurar hasta disponer del dominio HTTPS definitivo
+
+Guardar la integración y lanzar el primer build desde Cloudflare. Verificar en la URL entregada por Cloudflare que la homepage, el catálogo, el carrito, `sitemap.xml`, 404 y cabeceras de seguridad se comporten correctamente. La URL `*.workers.dev` se podrá habilitar entonces según lo que permita la cuenta.
+
+La cuenta no tiene una zona de dominio personalizado. Mantener las previews `noindex` hasta configurar `VITE_SITE_URL` con dominio definitivo. El checkout no está implementado; no activar pagos hasta integrar un proveedor seguro.
