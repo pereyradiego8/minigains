@@ -9,7 +9,7 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
       <ol className="flex flex-wrap items-center gap-1.5">
         <li><Link to="/" className="hover:text-primary">Inicio</Link></li>
         {items.map((c, i) => (
-          <li key={i} className="flex items-center gap-1.5">
+          <li key={`${c.label}-${i}`} className="flex items-center gap-1.5">
             <span aria-hidden="true">/</span>
             {c.to ? <Link to={c.to} {...(c.params ? { params: c.params } : {})} className="hover:text-primary">{c.label}</Link> : <span aria-current="page" className="text-foreground">{c.label}</span>}
           </li>
