@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - 'audit/**'
+      - 'infra/**'
   pull_request:
     branches:
       - main
@@ -43,3 +44,7 @@ jobs:
         run: bun run build
       - name: Respetar presupuesto de recursos web
         run: node scripts/check-bundle-budget.mjs
+      - name: Verificar paquete de despliegue Cloudflare sin publicar
+        run: bun run deploy:check
+      - name: Probar HTTP SSR de Cloudflare en localhost
+        run: node scripts/smoke-preview.mjs
