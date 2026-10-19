@@ -28,7 +28,7 @@ describe("carrito", () => {
     expect(t.unpriced).toBe(1);
   });
   it("limita cantidad máxima y elimina con 0", () => {
-    expect(addLine([], "a", 99)[0].qty).toBe(MAX_QTY);
+    expect(addLine([], "a", 99)[0]?.qty).toBe(MAX_QTY);
     expect(setLineQty([{ slug: "a", qty: 1 }], "a", 0)).toEqual([]);
   });
   it("deduplica y limita datos corruptos del almacenamiento local", () => {
