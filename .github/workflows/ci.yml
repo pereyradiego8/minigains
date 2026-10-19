@@ -28,15 +28,11 @@ jobs:
       - name: Instalar Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: '1.3.0'
+          bun-version: '1.4.3'
       - name: Instalar dependencias reproducibles
         run: bun install --frozen-lockfile
-      - name: Revisar dependencias de producción (diagnóstico inicial)
-        continue-on-error: true
-        run: bun audit --prod --audit-level=high
-      - name: Simular parches para dependencias vulnerables
-        continue-on-error: true
-        run: bun audit fix --dry-run
+      - name: Bloquear vulnerabilidades moderadas, altas o críticas
+        run: bun audit --audit-level=moderate
       - name: Comprobar tipos
         run: bunx tsc --noEmit
       - name: Analizar código
