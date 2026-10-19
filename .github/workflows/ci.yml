@@ -34,6 +34,9 @@ jobs:
       - name: Revisar dependencias de producción (diagnóstico inicial)
         continue-on-error: true
         run: bun audit --prod --audit-level=high
+      - name: Simular parches para dependencias vulnerables
+        continue-on-error: true
+        run: bun audit fix --dry-run
       - name: Comprobar tipos
         run: bunx tsc --noEmit
       - name: Analizar código
