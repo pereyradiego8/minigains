@@ -46,7 +46,7 @@ function ProductPage() {
         <div className="lg:col-span-7">
           <ProductImage key={p.images[img]} src={p.images[img]} alt={p.name} priority sizes="(min-width:1024px) 55vw, 100vw" className="aspect-square rounded-3xl" />
           {p.images.length > 1 && (
-            <div className="mt-3 flex gap-3" role="group" aria-label="Galería">
+            <div className="mt-3 flex gap-3 overflow-x-auto pb-2" role="group" aria-label="Galería">
               {p.images.map((u, i) => (
                 <button key={u} type="button" onClick={() => setImg(i)} aria-label={`Ver imagen ${i + 1}`} aria-pressed={i === img} className={cn("overflow-hidden rounded-xl border-2", i === img ? "border-primary" : "border-transparent")}>
                   <ProductImage src={u} alt="" sizes="96px" className="h-20 w-20" />

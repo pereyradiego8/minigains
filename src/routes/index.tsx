@@ -1,19 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-const hero = "https://acdn-us.mitiendanube.com/stores/005/881/501/products/img_2904-fd088983db81d71af017740475099990-1024-1024.jpg";
 import { Button } from "@/components/ui/button";
 import { ProductGrid } from "@/components/product/ProductCard";
 import { ProductImage } from "@/components/product/ProductImage";
 import { CATEGORIES } from "@/data/categories";
-import { getByCategory, getFeatured } from "@/data/catalog";
+import { getByCategory, getFeatured, getProduct } from "@/data/catalog";
 import { pageMeta } from "@/lib/seo";
 import { FAQ_SHORT, FaqList } from "@/components/FaqList";
 
+const hero = getProduct("granola-sin-tacc-500g")?.images[0];
+
 export const Route = createFileRoute("/")({
-  head: () => ({
-    ...pageMeta({ title: "Cocina saludable artesanal", description: "Granolas, muffins, budines, panes sin TACC y combos caseros. Pedidos coordinados con precios de referencia.", path: "/" }),
-    links: [{ rel: "canonical", href: "/" }, { rel: "preload", as: "image", href: hero }],
-  }),
+  head: () => pageMeta({ title: "Cocina saludable artesanal", description: "Granolas, muffins, budines, panes sin TACC y combos caseros. Pedidos coordinados con precios de referencia.", path: "/" }),
   component: Home,
 });
 
@@ -29,7 +27,7 @@ function Home() {
   return (
     <>
       <section className="relative overflow-hidden">
-        <img src={hero} alt="Imagen de granola casera del catálogo" width={1600} height={1104} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover object-[70%_center]" />
+        <ProductImage src={hero} alt="Granola Premium 500 g" priority sizes="100vw" className="absolute inset-0 h-full w-full [&_img]:object-[70%_center]" />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent md:via-background/55" aria-hidden="true" />
         <div className="container-page relative flex min-h-[clamp(32rem,82vh,52rem)] flex-col justify-center py-20">
           <p className="eyebrow fade-up">Cocina saludable · Hecho a mano</p>

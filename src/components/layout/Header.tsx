@@ -54,7 +54,7 @@ export function Header() {
         <div className="container-page flex h-16 items-center gap-4 lg:h-[4.5rem]">
           <Sheet open={menu} onOpenChange={setMenu}>
             <SheetTrigger asChild>
-              <button className="grid h-11 w-11 place-items-center rounded-full hover:bg-accent lg:hidden" aria-label="Abrir menú">
+              <button className="grid h-11 w-11 place-items-center rounded-full hover:bg-accent xl:hidden" aria-label="Abrir menú">
                 <Menu className="h-5 w-5" />
               </button>
             </SheetTrigger>
@@ -85,7 +85,7 @@ export function Header() {
 
           <Logo />
 
-          <nav aria-label="Principal" className="ml-6 hidden items-center gap-1 lg:flex">
+          <nav aria-label="Principal" className="ml-6 hidden items-center gap-1 xl:flex">
             {NAV.map((n) => (
               <Link key={n.to} to={n.to} className="rounded-full px-3.5 py-2 text-sm font-medium transition-colors hover:bg-accent" activeProps={{ className: "text-primary" }}>
                 {n.label}

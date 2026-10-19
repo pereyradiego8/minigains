@@ -41,3 +41,5 @@ jobs:
         run: bun run test
       - name: Compilar producción
         run: bun run build
+      - name: Respetar presupuesto de recursos web
+        run: node scripts/check-bundle-budget.mjs
