@@ -54,17 +54,18 @@ bun run deploy
 ```
 **La publicación desde GitHub requiere autorizar la Cloudflare GitHub App** en Workers & Pages → Worker MiniGains → Settings → Builds → Connect, si no existe la conexión. No agregues tokens de API en el repositorio.
 
-### Activación de Workers Builds
+### Cloudflare Workers: desplegado desde GitHub
 
-La conexión Cloudflare ↔ GitHub para `pereyradiego8/minigains` ya fue autorizada y registrada. El Worker `minigains` existe, pero **no sirve todavía la aplicación real**. Se creó inicialmente sin ruta pública con una respuesta temporal HTTP 503 y `noindex`.
+- **URL de prueba:** https://minigains.8pereyradiego8.workers.dev
+- **Worker:** `minigains`
+- **Repositorio conectado:** `pereyradiego8/minigains`, rama `main`
+- **Build command:** `bun run build`
+- **Deploy command:** `bunx wrangler deploy`
+- **Primer build desde Cloudflare:** confirmado exitoso el 19 de octubre de 2026.
+- **Auto-build:** habilitado en Workers Builds para nuevas actualizaciones de `main`.
 
-Falta completar una sola vez la autorización del token de Workers Builds desde el panel de Cloudflare, porque el acceso OAuth de esta integración no permite generar tokens API. En [Workers & Pages](https://dash.cloudflare.com/?to=/:account/workers-and-pages), ingresar a `minigains` → **Settings → Builds → Connect** y seleccionar GitHub, repositorio `pereyradiego8/minigains`, rama `main`. Dejar:
-- Directorio raíz: `/`
-- Build command: `bun run build`
-- Deploy command: `bunx wrangler deploy`
-- Build token: **generar automáticamente en el panel** (no insertar en el repositorio)
-- Variables de build: mantener `VITE_SITE_URL` sin configurar hasta disponer del dominio HTTPS definitivo
+El primer despliegue reemplazó al Worker temporal por la aplicación real. La portada se comprobó desde Browser Rendering de Cloudflare; las otras rutas se deben seguir verificando en un navegador público, con especial atención al carrito y recursos remotos.
 
-Guardar la integración y lanzar el primer build desde Cloudflare. Verificar en la URL entregada por Cloudflare que la homepage, el catálogo, el carrito, `sitemap.xml`, 404 y cabeceras de seguridad se comporten correctamente. La URL `*.workers.dev` se podrá habilitar entonces según lo que permita la cuenta.
+Hasta configurar dominio definitivo y verificar precios y stock, **este es un despliegue de prueba**. `VITE_SITE_URL` permanece sin valor; las páginas incluyen `noindex` y el sitemap no publica una URL canónica. Al asignar el dominio comercial HTTPS, establecer esta variable en las variables de **build** de Cloudflare y reconstruir.
 
-La cuenta no tiene una zona de dominio personalizado. Mantener las previews `noindex` hasta configurar `VITE_SITE_URL` con dominio definitivo. El checkout no está implementado; no activar pagos hasta integrar un proveedor seguro.
+Los precios siguen siendo históricos y el carrito no procesa pagos. No conectar ni habilitar una pasarela sin backend comercial seguro.
