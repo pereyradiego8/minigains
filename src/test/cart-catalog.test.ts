@@ -31,6 +31,16 @@ describe("carrito", () => {
     expect(addLine([], "a", 99)[0].qty).toBe(MAX_QTY);
     expect(setLineQty([{ slug: "a", qty: 1 }], "a", 0)).toEqual([]);
   });
+  it("deduplica y limita datos corruptos del almacenamiento local", () => {
+    const raw = JSON.stringify({ v: 1, lines: [
+      { slug: "a", qty: 3 }, { slug: "a", qty: 19 },
+      { slug: "b", qty: -2 }, { slug: "c", qty: 1.5 },
+      { slug: "desconocido", qty: 2 },
+    ] });
+    expect(parseStoredCart(raw, (slug) => ["a", "b", "c"].includes(slug)))
+      .toEqual([{ slug: "a", qty: MAX_QTY }]);
+    expect(parseStoredCart("x".repeat(32_769), () => true)).toEqual([]);
+  });
   it("descarta storage de otra versión", () => {
     expect(parseStoredCart(JSON.stringify({ v: 0, lines: [{ slug: "a", qty: 1 }] }), () => true)).toEqual([]);
     expect(parseStoredCart(serializeCart([{ slug: "a", qty: 2 }]), () => true)).toEqual([{ slug: "a", qty: 2 }]);

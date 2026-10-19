@@ -1,30 +1,28 @@
+/** Página de error autocontenida, sin scripts inline ni datos internos. */
 export function renderErrorPage(): string {
   return `<!doctype html>
-<html lang="en">
+<html lang="es-AR">
   <head>
     <meta charset="utf-8" />
-    <title>This page didn't load</title>
+    <title>No se pudo cargar · MiniGains</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
     <style>
-      body { font: 15px/1.5 system-ui, -apple-system, sans-serif; background: #fafafa; color: #111; display: grid; place-items: center; min-height: 100vh; margin: 0; padding: 1.5rem; }
-      .card { max-width: 28rem; width: 100%; text-align: center; padding: 2rem; }
-      h1 { font-size: 1.25rem; margin: 0 0 0.5rem; }
-      p { color: #4b5563; margin: 0 0 1.5rem; }
-      .actions { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; }
-      a, button { padding: 0.5rem 1rem; border-radius: 0.375rem; font: inherit; cursor: pointer; text-decoration: none; border: 1px solid transparent; }
-      .primary { background: #111; color: #fff; }
-      .secondary { background: #fff; color: #111; border-color: #d1d5db; }
+      body { font: 16px/1.6 system-ui, sans-serif; background: #F5EBDD; color: #49343A; display: grid; place-items: center; min-height: 100vh; margin: 0; padding: 1.5rem; box-sizing: border-box; }
+      main { max-width: 32rem; width: 100%; text-align: center; }
+      h1 { font-size: 1.5rem; }
+      a { display: inline-block; margin: .4rem; padding: .7rem 1rem; border-radius: .7rem; text-decoration: none; background: #722F43; color: #fff; }
+      a + a { background: transparent; color: #722F43; border: 1px solid #722F43; }
+      a:focus-visible { outline: 3px solid #49343A; outline-offset: 3px; }
     </style>
   </head>
   <body>
-    <div class="card">
-      <h1>This page didn't load</h1>
-      <p>Something went wrong on our end. You can try refreshing or head back home.</p>
-      <div class="actions">
-        <button class="primary" onclick="location.reload()">Try again</button>
-        <a class="secondary" href="/">Go home</a>
-      </div>
-    </div>
+    <main>
+      <h1>No pudimos cargar esta página</h1>
+      <p>Ocurrió un error temporal. Podés volver a intentar o regresar al inicio.</p>
+      <a href="">Reintentar</a>
+      <a href="/">Volver al inicio</a>
+    </main>
   </body>
 </html>`;
 }

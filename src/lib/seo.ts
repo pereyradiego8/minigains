@@ -1,4 +1,4 @@
-export function pageMeta(opts: { title: string; description: string; path: string; type?: string; noindex?: boolean; image?: string }) {
+export function pageMeta(opts: { title: string; description: string; path: string; type?: string; noindex?: boolean; image?: string | undefined }) {
   const title = `${opts.title} · MiniGains`;
   const meta: Record<string, string>[] = [
     { title },

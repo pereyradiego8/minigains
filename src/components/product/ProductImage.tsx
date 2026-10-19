@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 const sized = (url: string, w: number) => url.replace(/-\d+-0(\.\w+)$/, `-${w}-0$1`);
 
 interface Props {
-  src?: string;
+  src?: string | undefined;
   alt: string;
   className?: string;
   sizes?: string;

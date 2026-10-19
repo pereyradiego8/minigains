@@ -28,14 +28,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [announcement, setAnnouncement] = useState("");
 
   useEffect(() => {
-    setRaw(parseStoredCart(localStorage.getItem(CART_STORAGE_KEY), (s) => !!getProduct(s)));
-    setHydrated(true);
+    try {
+      setRaw(parseStoredCart(localStorage.getItem(CART_STORAGE_KEY), (s) => !!getProduct(s)));
+    } catch {
+      // Navegadores con almacenamiento restringido deben mantener el carrito en memoria.
+      setRaw([]);
+    } finally {
+      setHydrated(true);
+    }
   }, []);
   useEffect(() => {
-    if (hydrated) localStorage.setItem(CART_STORAGE_KEY, serializeCart(raw));
+    if (!hydrated) return;
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, serializeCart(raw));
+    } catch {
+      // Almacenamiento denegado o cuota llena: carrito en memoria sin romper la UI.
+    }
   }, [raw, hydrated]);
 
   const add = useCallback((slug: string, qty = 1) => {
+    if (!getProduct(slug)) return;
     setRaw((l) => addLine(l, slug, qty));
     setAnnouncement(`${getProduct(slug)?.name ?? "Producto"} agregado al carrito`);
     setOpen(true);

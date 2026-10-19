@@ -35,15 +35,26 @@ export function computeTotals(lines: CartLine[], priceOf: (slug: string) => numb
 
 /** Lee el carrito versionado y descarta datos inválidos. */
 export function parseStoredCart(raw: string | null, isValidSlug: (s: string) => boolean): CartLine[] {
-  if (!raw) return [];
+  if (!raw || raw.length > 32_768) return [];
   try {
     const data = JSON.parse(raw) as unknown;
     if (!data || typeof data !== "object" || (data as { v?: unknown }).v !== 1) return [];
     const lines = (data as { lines?: unknown }).lines;
     if (!Array.isArray(lines)) return [];
-    return lines
-      .filter((l): l is CartLine => !!l && typeof l.slug === "string" && typeof l.qty === "number" && isValidSlug(l.slug))
-      .map((l) => ({ slug: l.slug, qty: clampQty(l.qty) }));
+    const items = new Map<string, CartLine>();
+    for (const value of lines) {
+      if (!value || typeof value !== "object") continue;
+      const line = value as Partial<CartLine>;
+      if (typeof line.slug !== "string" || !isValidSlug(line.slug)) continue;
+      if (typeof line.qty !== "number" || !Number.isInteger(line.qty) || line.qty <= 0) continue;
+      const existing = items.get(line.slug);
+      if (existing) {
+        existing.qty = clampQty(existing.qty + line.qty);
+      } else if (items.size < 50) {
+        items.set(line.slug, { slug: line.slug, qty: clampQty(line.qty) });
+      }
+    }
+    return [...items.values()];
   } catch {
     return [];
   }
