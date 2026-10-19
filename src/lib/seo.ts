@@ -22,7 +22,7 @@ export function publicSiteOrigin(value: unknown): string | undefined {
 
 export function canonicalUrl(
   path: string,
-  configuredUrl: unknown = import.meta.env.VITE_SITE_URL,
+  configuredUrl: unknown = import.meta.env["VITE_SITE_URL"],
 ): string | undefined {
   const origin = publicSiteOrigin(configuredUrl);
   if (!origin || !path.startsWith("/") || path.startsWith("//") || path.includes("?") || path.includes("#")) return undefined;

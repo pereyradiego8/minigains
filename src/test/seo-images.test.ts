@@ -21,7 +21,7 @@ describe("SEO seguro", () => {
     vi.stubEnv("VITE_SITE_URL", "");
     const data = pageMeta({ title: "Tienda", description: "Productos", path: "/productos" });
     expect(data.links).toEqual([]);
-    expect(data.meta.some((m) => m.name === "robots" && m.content === "noindex, follow")).toBe(true);
+    expect(data.meta.some((m) => m["name"] === "robots" && m["content"] === "noindex, follow")).toBe(true);
   });
 
   it("usa la URL canónica configurada", () => {
