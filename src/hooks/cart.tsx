@@ -50,7 +50,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     if (!getProduct(slug)) return;
     setRaw((l) => addLine(l, slug, qty));
     setAnnouncement(`${getProduct(slug)?.name ?? "Producto"} agregado al carrito`);
-    setOpen(true);
+    // Abrir el carrito es una decisión explícita del cliente (icono del encabezado).
   }, []);
   const setQty = useCallback((slug: string, qty: number) => setRaw((l) => setLineQty(l, slug, qty)), []);
   const remove = useCallback((slug: string) => {
