@@ -1,5 +1,5 @@
 {
-  "name": "tanstack_start_ts",
+  "name": "minigains",
   "private": true,
   "sideEffects": false,
   "type": "module",
@@ -11,7 +11,10 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "deploy": "bun run build && wrangler deploy",
+    "deploy:check": "wrangler deploy --dry-run",
+    "cf:typegen": "wrangler types"
   },
   "overrides": {
     "rolldown": "1.2.1"
