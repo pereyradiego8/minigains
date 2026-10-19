@@ -4,11 +4,9 @@ import { Button } from "@/components/ui/button";
 import { ProductGrid } from "@/components/product/ProductCard";
 import { ProductImage } from "@/components/product/ProductImage";
 import { CATEGORIES } from "@/data/categories";
-import { getByCategory, getFeatured, getProduct } from "@/data/catalog";
+import { getByCategory, getFeatured } from "@/data/catalog";
 import { pageMeta } from "@/lib/seo";
 import { FAQ_SHORT, FaqList } from "@/components/FaqList";
-
-const hero = getProduct("granola-sin-tacc-500g")?.images[0];
 
 export const Route = createFileRoute("/")({
   head: () => pageMeta({ title: "Cocina saludable artesanal", description: "Granolas, muffins, budines, panes sin TACC y combos caseros. Pedidos coordinados con precios de referencia.", path: "/" }),
@@ -26,9 +24,18 @@ function Home() {
   const featured = getFeatured();
   return (
     <>
-      <section className="relative overflow-hidden">
-        <ProductImage src={hero} alt="Granola Premium 500 g" priority sizes="100vw" className="absolute inset-0 h-full w-full [&_img]:object-[70%_center]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent md:via-background/55" aria-hidden="true" />
+      <section className="relative isolate overflow-hidden bg-gradient-to-br from-[#F5EBDD] via-[#F7E9DF] to-[#E8CAD1]">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -right-32 -top-36 h-[27rem] w-[27rem] rounded-full bg-[#D7A0AD]/25 blur-3xl" />
+          <div className="absolute -bottom-56 right-1/4 h-[30rem] w-[30rem] rounded-full bg-[#FFFFFF]/35 blur-3xl" />
+          <div className="absolute right-[3%] top-1/2 hidden aspect-square w-[min(43vw,34rem)] -translate-y-1/2 rotate-[-12deg] rounded-full border border-[#722F43]/15 bg-[#F5EBDD]/45 p-[9%] shadow-[0_24px_90px_-50px_rgba(73,52,58,0.35)] lg:block">
+            <div className="flex h-full w-full flex-col items-center justify-center rounded-full border border-[#722F43]/20 bg-[#D7A0AD]/25 text-center">
+              <span className="font-display text-[clamp(5rem,9vw,9rem)] italic leading-none text-[#722F43]/45">M</span>
+              <span className="mt-2 font-display text-2xl italic text-[#49343A]/75">Hecho a mano</span>
+              <span className="mt-3 text-[0.6rem] font-semibold uppercase tracking-[0.3em] text-[#722F43]/70">MiniGains</span>
+            </div>
+          </div>
+        </div>
         <div className="container-page relative flex min-h-[clamp(32rem,82vh,52rem)] flex-col justify-center py-20">
           <p className="eyebrow fade-up">Cocina saludable · Hecho a mano</p>
           <h1 className="text-display fade-up mt-5 max-w-3xl">Pequeñas cosas ricas que <em className="italic text-primary">suman</em>.</h1>

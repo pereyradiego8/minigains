@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { getProduct, getRelated, getVariants, excerpt } from "@/data/catalog";
 import { getCategory } from "@/data/categories";
 import { formatARS } from "@/lib/format";
-import { useCart } from "@/hooks/cart";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { pageMeta } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
@@ -35,7 +35,6 @@ function ProductPage() {
   const p = getProduct(slug)!;
   const [img, setImg] = useState(0);
   const [qty, setQty] = useState(1);
-  const { add } = useCart();
   const variants = getVariants(p);
   const cat = getCategory(p.category);
 
@@ -77,7 +76,7 @@ function ProductPage() {
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <QtyStepper value={qty} onChange={(n) => setQty(Math.max(1, n))} label={p.name} />
-            <Button size="lg" className="flex-1" onClick={() => add(p.slug, qty)}>Agregar al carrito</Button>
+            <AddToCartButton slug={p.slug} name={p.name} quantity={qty} variant="full" />
           </div>
           <div className="mt-4"><PriceNotice /></div>
 

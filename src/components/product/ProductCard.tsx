@@ -1,13 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import { Plus } from "lucide-react";
 import type { Product } from "@/data/types";
 import { getCategory } from "@/data/categories";
 import { formatARS } from "@/lib/format";
-import { useCart } from "@/hooks/cart";
+import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { ProductImage } from "./ProductImage";
 
 export function ProductCard({ product }: { product: Product }) {
-  const { add } = useCart();
   return (
     <article className="group relative flex flex-col">
       <Link
@@ -41,14 +39,7 @@ export function ProductCard({ product }: { product: Product }) {
             {formatARS(product.referencePrice)}
             <span className="sr-only"> (precio de referencia)</span>
           </p>
-          <button
-            type="button"
-            onClick={() => add(product.slug)}
-            className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-primary/25 text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
-            aria-label={`Agregar ${product.name} al carrito`}
-          >
-            <Plus className="h-4 w-4" />
-          </button>
+          <AddToCartButton slug={product.slug} name={product.name} variant="icon" />
         </div>
       </div>
     </article>

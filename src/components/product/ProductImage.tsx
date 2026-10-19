@@ -2,6 +2,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 const SIZE_SUFFIX = /-\d+-0(\.[a-z0-9]+)$/i;
+/** Conservado para un futuro CDN con variantes verificadas; no se usa sin confirmarlas. */
 export const productImageVariant = (url: string, width: number) =>
   url.replace(SIZE_SUFFIX, `-${width}-0$1`);
 
@@ -13,37 +14,35 @@ interface Props {
   priority?: boolean;
 }
 
-/** srcset solo para URLs que admiten variantes; nunca construir URLs de dominios arbitrarios. */
+/** Las imágenes se cargan desde su URL original: nunca inventar tamaños que puedan devolver 404. */
 export function ProductImage({
   src, alt, className, sizes = "(min-width:1024px) 25vw, 50vw", priority = false,
 }: Props) {
   const [status, setStatus] = useState<{ url: string; state: "loaded" | "failed" } | null>(null);
   const loaded = !!src && status?.url === src && status.state === "loaded";
-  const failed = !src || (!!src && status?.url === src && status.state === "failed");
+  const failed = !src || (status?.url === src && status.state === "failed");
 
-  if (!src || failed) {
+  if (failed) {
     return (
-      <div role={alt ? "img" : undefined} aria-label={alt ? `${alt} — imagen no disponible` : undefined}
-        className={cn("relative grid place-items-center bg-gradient-blush", className)}>
-        <svg viewBox="0 0 64 64" className="h-1/4 w-1/4 text-primary/40" aria-hidden="true">
-          <circle cx="32" cy="32" r="26" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M20 38c4-10 20-10 24 0M24 28h.01M40 28h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
-        </svg>
-        <span aria-hidden="true" className="absolute bottom-3 font-display text-sm italic text-muted-foreground">MiniGains</span>
+      <div
+        role={alt ? "img" : undefined}
+        aria-label={alt ? `${alt} — fotografía no disponible` : undefined}
+        className={cn("relative isolate grid place-items-center overflow-hidden bg-gradient-blush", className)}
+      >
+        <div aria-hidden="true" className="absolute -right-1/4 -top-1/4 h-2/3 w-2/3 rounded-full border border-primary/10 bg-blush/20" />
+        <div aria-hidden="true" className="absolute -bottom-1/3 -left-1/4 h-3/4 w-3/4 rounded-full border border-primary/10 bg-card/30" />
+        <div aria-hidden="true" className="relative flex flex-col items-center justify-center gap-1 px-4 text-center">
+          <span className="font-display text-5xl italic leading-none text-primary/45">M</span>
+          <span className="text-[0.6rem] font-semibold uppercase tracking-[0.22em] text-primary/65">MiniGains</span>
+        </div>
       </div>
     );
   }
-  // Las imágenes proceden de un catálogo validado y de un CDN HTTPS permitido.
-  const canResize = SIZE_SUFFIX.test(src);
-  const url = canResize ? productImageVariant(src, 640) : src;
-  const srcSet = canResize
-    ? [320, 480, 640, 1024].map((w) => `${productImageVariant(src, w)} ${w}w`).join(", ")
-    : undefined;
+
   return (
     <div className={cn("relative overflow-hidden bg-muted", !loaded && "animate-pulse", className)}>
       <img
-        src={url}
-        srcSet={srcSet}
+        src={src}
         sizes={sizes}
         alt={alt}
         width={640}
