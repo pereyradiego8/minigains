@@ -5,7 +5,7 @@ import { setTimeout as pause } from "node:timers/promises";
 const host = "127.0.0.1";
 const port = 4173;
 const base = `http://${host}:${port}`;
-const proc = spawn("bun", ["run", "preview", "--", "--host", host, "--port", String(port), "--strictPort"], {
+const proc = spawn("bun", ["x", "vite", "preview", "--host", host, "--port", String(port), "--strictPort"], {
   stdio: ["ignore", "pipe", "pipe"],
   detached: false,
 });
