@@ -16,13 +16,13 @@ const SORTS: { v: SortKey; l: string }[] = [
   { v: "nombre", l: "Nombre A–Z" },
 ];
 
-interface Search { q?: string; categoria?: CategoryId; orden?: SortKey }
+interface Search { q?: string | undefined; categoria?: CategoryId | undefined; orden?: SortKey | undefined }
 
 export const Route = createFileRoute("/productos/")({
   validateSearch: (s: Record<string, unknown>): Search => ({
-    q: typeof s.q === "string" && s.q ? s.q.slice(0, 60) : undefined,
-    categoria: typeof s.categoria === "string" && isCategoryId(s.categoria) ? s.categoria : undefined,
-    orden: SORTS.some((x) => x.v === s.orden) ? (s.orden as SortKey) : undefined,
+    q: typeof s['q'] === "string" && s['q'] ? s['q'].slice(0, 60) : undefined,
+    categoria: typeof s['categoria'] === "string" && isCategoryId(s['categoria']) ? s['categoria'] : undefined,
+    orden: SORTS.some((x) => x.v === s['orden']) ? (s['orden'] as SortKey) : undefined,
   }),
   head: () => pageMeta({ title: "Productos", description: "Catálogo completo: granolas, barras, muffins, budines, panes sin TACC, crackers, combos y tortas de cumpleaños.", path: "/productos" }),
   component: Catalog,

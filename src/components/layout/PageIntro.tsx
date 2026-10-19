@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 
-export interface Crumb { label: string; to?: string; params?: Record<string, string> }
+export interface Crumb { label: string; to?: string | undefined; params?: Record<string, string> | undefined }
 
 export function Breadcrumbs({ items }: { items: Crumb[] }) {
   return (
@@ -11,7 +11,7 @@ export function Breadcrumbs({ items }: { items: Crumb[] }) {
         {items.map((c, i) => (
           <li key={i} className="flex items-center gap-1.5">
             <span aria-hidden="true">/</span>
-            {c.to ? <Link to={c.to} params={c.params} className="hover:text-primary">{c.label}</Link> : <span aria-current="page" className="text-foreground">{c.label}</span>}
+            {c.to ? <Link to={c.to} {...(c.params ? { params: c.params } : {})} className="hover:text-primary">{c.label}</Link> : <span aria-current="page" className="text-foreground">{c.label}</span>}
           </li>
         ))}
       </ol>

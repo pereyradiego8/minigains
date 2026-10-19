@@ -30,14 +30,14 @@ export function Footer() {
         <nav aria-label="Información" className="md:col-span-4">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] opacity-70">MiniGains</p>
           <ul className="mt-4 space-y-1 text-sm">
-            {[
+            {([
               ["/nosotros", "Nosotros"],
               ["/como-comprar", "Cómo comprar"],
               ["/preguntas-frecuentes", "Preguntas frecuentes"],
               ["/recetas", "Blog y recetas"],
               ["/contacto", "Contacto"],
               ["/carrito", "Carrito"],
-            ].map(([to, l]) => (
+            ] as const).map(([to, l]) => (
               <li key={to}>
                 <Link to={to} className="inline-flex min-h-9 items-center opacity-90 hover:opacity-100 hover:underline">{l}</Link>
               </li>

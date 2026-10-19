@@ -19,7 +19,7 @@ function SearchBox({ onDone, id }: { onDone?: () => void; id: string }) {
   const [q, setQ] = useState("");
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    navigate({ to: "/productos", search: { q: q.trim().slice(0, 60) || undefined } });
+    navigate({ to: "/productos", search: q.trim() ? { q: q.trim().slice(0, 60) } : {} });
     onDone?.();
   };
   return (

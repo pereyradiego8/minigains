@@ -50,7 +50,7 @@ export const getFeatured = (): Product[] => FEATURED.map((s) => BY_SLUG.get(s)).
 
 const norm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-export function queryProducts(opts: { q?: string; category?: CategoryId | null; sort?: SortKey }): Product[] {
+export function queryProducts(opts: { q?: string; category?: CategoryId | null | undefined; sort?: SortKey }): Product[] {
   const q = norm(opts.q?.trim() ?? "");
   let list = PRODUCTS.filter(
     (p) => (!opts.category || p.category === opts.category) && (!q || norm(`${p.name} ${p.description}`).includes(q)),
