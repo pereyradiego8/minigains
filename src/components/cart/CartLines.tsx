@@ -35,7 +35,7 @@ export function CartLines({ compact }: { compact?: boolean }) {
                 {product.name}
               </Link>
               <p className="shrink-0 text-sm font-semibold">
-                {product.referencePrice != null ? formatARS(product.referencePrice * qty) : "Consultar"}
+                {(product.currentPrice ?? product.referencePrice) != null ? formatARS((product.currentPrice ?? product.referencePrice)! * qty) : "Consultar"}
               </p>
             </div>
             <div className="flex items-center justify-between">
@@ -54,7 +54,7 @@ export function CartLines({ compact }: { compact?: boolean }) {
 export function PriceNotice() {
   return (
     <p className="rounded-xl bg-accent px-3 py-2 text-xs leading-relaxed text-accent-foreground">
-      Precios de referencia: el valor final, la disponibilidad y el envío se confirman antes de concretar cualquier pedido. No se realizan cobros en este sitio.
+      Los precios pueden ser históricos o informativos. El valor vigente, el stock y el envío se confirman antes de concretar una compra. Este sitio no realiza cobros.
     </p>
   );
 }

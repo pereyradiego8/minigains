@@ -3,15 +3,21 @@
  * mañana puede reemplazarse por una API segura sin tocar los componentes.
  */
 import { PRODUCTS_SNAPSHOT } from "./products.snapshot";
+import offers from "./commerce-overrides.json";
 import type { CategoryId, Product } from "./types";
 
 export type SortKey = "relevancia" | "precio-asc" | "precio-desc" | "nombre";
 
 const SAFE_IMG = /^https:\/\/acdn-us\.mitiendanube\.com\//;
 
+type Offer = { currentPrice?: number | null; status?: "consultar" | "disponible" | "agotado"; visible?: boolean };
+const OVERRIDES = offers as Record<string, Offer>;
 function sanitize(p: Product): Product {
+  const offer = OVERRIDES[p.slug];
   return {
     ...p,
+    availability: offer?.status ?? "consultar",
+    currentPrice: typeof offer?.currentPrice === "number" && Number.isSafeInteger(offer.currentPrice) && offer.currentPrice > 0 ? offer.currentPrice : null,
     name: p.name.replace(/[<>]/g, "").trim(),
     description: p.description.replace(/[<>]/g, "").trim(),
     images: p.images.filter((u) => SAFE_IMG.test(u)),
@@ -22,7 +28,7 @@ function sanitize(p: Product): Product {
   };
 }
 
-const PRODUCTS: Product[] = PRODUCTS_SNAPSHOT.map(sanitize);
+const PRODUCTS: Product[] = PRODUCTS_SNAPSHOT.filter(p => OVERRIDES[p.slug]?.visible !== false).map(sanitize);
 const BY_SLUG = new Map(PRODUCTS.map((p) => [p.slug, p]));
 
 export const getAllProducts = (): Product[] => PRODUCTS;

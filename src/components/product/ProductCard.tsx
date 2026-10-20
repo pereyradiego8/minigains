@@ -6,6 +6,7 @@ import { AddToCartButton } from "@/components/cart/AddToCartButton";
 import { ProductImage } from "./ProductImage";
 
 export function ProductCard({ product }: { product: Product }) {
+  const displayPrice = product.currentPrice ?? product.referencePrice;
   return (
     <article className="group relative flex flex-col">
       <Link
@@ -35,11 +36,13 @@ export function ProductCard({ product }: { product: Product }) {
           </Link>
         </h3>
         <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
-          <p className="text-sm font-semibold sm:text-base">
-            {formatARS(product.referencePrice)}
-            <span className="sr-only"> (precio de referencia)</span>
-          </p>
-          <AddToCartButton slug={product.slug} name={product.name} variant="icon" />
+          <div>
+            <p className="text-sm font-semibold sm:text-base">{formatARS(displayPrice)}</p>
+            <p className="text-[0.65rem] text-muted-foreground">{product.currentPrice != null ? "Precio informado" : "Referencia histórica"}</p>
+          </div>
+          {product.availability === "agotado"
+            ? <span className="rounded-full bg-muted px-3 py-2 text-xs font-medium text-muted-foreground">Sin disponibilidad</span>
+            : <AddToCartButton slug={product.slug} name={product.name} variant="icon" />}
         </div>
       </div>
     </article>

@@ -3,6 +3,7 @@ import { Check, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/cart";
 import { MAX_QTY } from "@/lib/cart-math";
+import { getProduct } from "@/data/catalog";
 
 /**
  * El botón "+" pasa a un contador interactivo que refleja el carrito REAL.
@@ -19,6 +20,7 @@ export function AddToCartButton({
 }) {
   const { add, lines, setQty } = useCart();
   const inCart = lines.find((line) => line.slug === slug)?.qty ?? 0;
+  const unavailable = getProduct(slug)?.availability === "agotado";
   const [added, setAdded] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -36,13 +38,13 @@ export function AddToCartButton({
   };
 
   const handleAdd = () => {
-    if (inCart >= MAX_QTY) return;
+    if (unavailable || inCart >= MAX_QTY) return;
     add(slug, Math.min(quantity, MAX_QTY - inCart));
     confirm();
   };
 
   const handleIncrease = () => {
-    if (inCart >= MAX_QTY) return;
+    if (unavailable || inCart >= MAX_QTY) return;
     add(slug, 1);
     confirm();
   };
@@ -84,7 +86,7 @@ export function AddToCartButton({
           <button
             type="button"
             onClick={handleIncrease}
-            disabled={inCart >= MAX_QTY}
+            disabled={unavailable || inCart >= MAX_QTY}
             className="grid h-11 w-11 shrink-0 place-items-center rounded-full transition-colors hover:bg-accent focus-visible:outline-offset-[-3px] disabled:cursor-not-allowed disabled:opacity-40"
             aria-label={`Agregar una unidad de ${name}`}
           >
