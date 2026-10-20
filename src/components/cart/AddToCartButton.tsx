@@ -41,6 +41,12 @@ export function AddToCartButton({
     confirm();
   };
 
+  const handleIncrease = () => {
+    if (inCart >= MAX_QTY) return;
+    add(slug, 1);
+    confirm();
+  };
+
   const handleDecrease = () => {
     setQty(slug, inCart - 1);
     if (inCart === 1) setAdded(false);
@@ -77,7 +83,7 @@ export function AddToCartButton({
           </span>
           <button
             type="button"
-            onClick={handleAdd}
+            onClick={handleIncrease}
             disabled={inCart >= MAX_QTY}
             className="grid h-11 w-11 shrink-0 place-items-center rounded-full transition-colors hover:bg-accent focus-visible:outline-offset-[-3px] disabled:cursor-not-allowed disabled:opacity-40"
             aria-label={`Agregar una unidad de ${name}`}
