@@ -42,7 +42,7 @@ try {
           throw new Error(`Ruta ${path} no disponible: HTTP ${page.status}`);
         }
       }
-      const categoryImages = [...body.matchAll(/<img\\b[^>]*>/g)].slice(0, 5).map((x) => x[0]);
+      const categoryImages = [...body.matchAll(/<img\b[^>]*>/g)].slice(0, 5).map((x) => x[0]);
       if (categoryImages.length !== 5 || categoryImages.some((tag) => tag.includes("opacity-0"))) {
         throw new Error("Las imágenes de categorías no deben quedar ocultas en el SSR.");
       }
