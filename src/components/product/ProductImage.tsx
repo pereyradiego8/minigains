@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 const SIZE_SUFFIX = /-\d+-0(\.[a-z0-9]+)$/i;
@@ -14,15 +14,26 @@ interface Props {
   priority?: boolean;
 }
 
-/** Las imágenes se cargan desde su URL original: nunca inventar tamaños que puedan devolver 404. */
+/**
+ * Los <img> de SSR deben mostrarse visibles desde el primer HTML:
+ * su carga puede terminar ANTES de que React hidrate la página.
+ * No depender de onLoad para cambiar opacity-0 a opacity-100.
+ */
 export function ProductImage({
   src, alt, className, sizes = "(min-width:1024px) 25vw, 50vw", priority = false,
 }: Props) {
-  const [status, setStatus] = useState<{ url: string; state: "loaded" | "failed" } | null>(null);
-  const loaded = !!src && status?.url === src && status.state === "loaded";
-  const failed = !src || (status?.url === src && status.state === "failed");
+  const ref = useRef<HTMLImageElement>(null);
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
 
-  if (failed) {
+  // Si onError sucedió antes de hidratar React, detectar imágenes ya fallidas.
+  useEffect(() => {
+    const img = ref.current;
+    if (src && img?.complete && img.naturalWidth === 0) {
+      setFailedUrl(src);
+    }
+  }, [src]);
+
+  if (!src || failedUrl === src) {
     return (
       <div
         role={alt ? "img" : undefined}
@@ -40,8 +51,9 @@ export function ProductImage({
   }
 
   return (
-    <div className={cn("relative overflow-hidden bg-muted", !loaded && "animate-pulse", className)}>
+    <div className={cn("relative overflow-hidden bg-muted", className)}>
       <img
+        ref={ref}
         src={src}
         sizes={sizes}
         alt={alt}
@@ -51,9 +63,8 @@ export function ProductImage({
         fetchPriority={priority ? "high" : "auto"}
         decoding="async"
         referrerPolicy="no-referrer"
-        onLoad={() => setStatus({ url: src, state: "loaded" })}
-        onError={() => setStatus({ url: src, state: "failed" })}
-        className={cn("h-full w-full object-cover transition-opacity duration-300", loaded ? "opacity-100" : "opacity-0")}
+        onError={() => setFailedUrl(src)}
+        className="h-full w-full object-cover"
       />
     </div>
   );

@@ -25,7 +25,30 @@ try {
       if (res.headers.get("x-content-type-options") !== "nosniff") throw new Error("Falta X-Content-Type-Options");
       const unknown = await fetch(base + "/ruta-que-no-existe-12345", { signal: AbortSignal.timeout(3000) });
       if (unknown.status !== 404) throw new Error(`404 incorrecto: ${unknown.status}`);
-      console.log("HTTP smoke aprobado: homepage SSR, cabeceras y respuesta 404.");
+      const expectedPages = [
+        ["/productos", "Todos los productos"],
+        ["/productos/granola-sin-tacc-500g", "Granola"],
+        ["/nosotros", "MiniGains"],
+        ["/como-comprar", "Cómo comprar"],
+        ["/contacto", "Contacto"],
+        ["/recetas", "Recetas"],
+        ["/preguntas-frecuentes", "Preguntas"],
+        ["/carrito", "Carrito"],
+      ];
+      for (const [path, expected] of expectedPages) {
+        const page = await fetch(base + path, { signal: AbortSignal.timeout(5000) });
+        const html = await page.text();
+        if (!page.ok || !html.includes(expected)) {
+          throw new Error(`Ruta ${path} no disponible: HTTP ${page.status}`);
+        }
+      }
+      const categoryImages = [...body.matchAll(/<img\b[^>]*>/g)].slice(0, 5).map((x) => x[0]);
+      if (categoryImages.length !== 5 || categoryImages.some((tag) => tag.includes("opacity-0"))) {
+        throw new Error("Las imágenes de categorías no deben quedar ocultas en el SSR.");
+      }
+      const favicon = await fetch(base + "/favicon.svg", { signal: AbortSignal.timeout(5000) });
+      if (!favicon.ok || !(await favicon.text()).includes("<svg")) throw new Error("Favicon no disponible");
+      console.log("HTTP smoke aprobado: inicio, categorías visibles, 8 rutas, favicon, cabeceras y 404.");
       ok = true;
       break;
     } catch (error) {
