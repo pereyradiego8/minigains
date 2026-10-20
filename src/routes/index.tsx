@@ -36,7 +36,7 @@ function Home() {
             </div>
           </div>
         </div>
-        <div className="container-page relative flex min-h-[clamp(32rem,82vh,52rem)] flex-col justify-center py-20">
+        <div className="container-page relative flex flex-col justify-start pt-8 pb-14 sm:pt-12 sm:pb-16 lg:min-h-[clamp(32rem,82vh,52rem)] lg:justify-center lg:py-20">
           <p className="eyebrow fade-up">Cocina saludable · Hecho a mano</p>
           <h1 className="text-display fade-up mt-5 max-w-3xl">Pequeñas cosas ricas que <em className="italic text-primary">suman</em>.</h1>
           <p className="fade-up mt-6 max-w-md text-lg text-muted-foreground">Granolas, muffins, budines y panes artesanales para tus desayunos, meriendas y celebraciones.</p>
