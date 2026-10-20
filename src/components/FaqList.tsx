@@ -2,7 +2,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 export const FAQ_ALL: [string, string][] = [
   ["¿Los precios publicados son finales?", "No. Son precios de referencia tomados de un relevamiento previo. El valor final se confirma antes de cada pedido."],
-  ["¿Cómo hago un pedido?", "Agregá productos al carrito y tocá “Solicitar pedido”. Te mostramos el resumen para coordinar por los canales de contacto. Este sitio no cobra ni pide datos de tarjeta."],
+  ["¿Cómo hago un pedido?", "Agregá productos al carrito, compartí la consulta o copiá su resumen. Mientras configuramos el WhatsApp oficial, el sitio no recibe pedidos automáticamente y no realiza cobros."],
   ["¿Tienen opciones sin TACC?", "Sí, algunos productos están indicados como sin TACC en su ficha. Si tenés celiaquía o alergias, consultanos antes de pedir sobre el proceso de elaboración."],
   ["¿Hacen envíos?", "Las zonas y costos de entrega se coordinan al confirmar el pedido."],
   ["¿Cómo se conservan los productos?", "Al ser artesanales y sin conservantes agregados en varias recetas, te indicamos la conservación al entregar."],

@@ -1,10 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { ClipboardCopy, Send, Share2 } from "lucide-react";
 import { PageIntro } from "@/components/layout/PageIntro";
 import { CartLines, PriceNotice } from "@/components/cart/CartLines";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/cart";
 import { formatARS } from "@/lib/format";
+import { orderSummary, whatsAppLink } from "@/lib/store-contact";
 import { pageMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/carrito")({
@@ -14,8 +16,32 @@ export const Route = createFileRoute("/carrito")({
 
 function CartPage() {
   const { lines, subtotal, units, unpriced, clear } = useCart();
-  const [req, setReq] = useState(false);
-  const summary = lines.map((l) => `• ${l.qty} x ${l.product.name}`).join("\n");
+  const [feedback, setFeedback] = useState("");
+  const summary = orderSummary(lines);
+  const whatsappUrl = whatsAppLink(summary);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(summary);
+      setFeedback("¡Pedido copiado! Pegalo en el chat que prefieras.");
+    } catch {
+      setFeedback("El navegador no permitió copiar automáticamente. Seleccioná y copiá el resumen de abajo.");
+    }
+  };
+
+  const share = async () => {
+    if (typeof navigator.share !== "function") {
+      await copy();
+      return;
+    }
+    try {
+      await navigator.share({ text: summary, title: "Consulta de pedido MiniGains" });
+      setFeedback("Elegiste cómo compartirlo. La tienda todavía no recibió ni confirmó un pedido.");
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") return;
+      await copy();
+    }
+  };
 
   return (
     <>
@@ -31,21 +57,23 @@ function CartPage() {
             <div className="lg:col-span-7"><CartLines /><button onClick={clear} className="mt-4 min-h-11 text-sm text-muted-foreground underline">Vaciar carrito</button></div>
             <aside className="h-fit space-y-4 rounded-3xl bg-card p-6 shadow-soft lg:sticky lg:top-24 lg:col-span-5" aria-label="Resumen">
               <div className="flex justify-between text-sm"><span>Unidades</span><span>{units}</span></div>
-              <div className="flex items-baseline justify-between"><span>Subtotal de referencia</span><span className="font-display text-3xl">{formatARS(subtotal)}</span></div>
+              <div className="flex items-baseline justify-between gap-4"><span>Subtotal de referencia</span><span className="font-display text-3xl">{formatARS(subtotal)}</span></div>
               {unpriced > 0 && <p className="text-xs text-muted-foreground">{unpriced} producto(s) con precio a consultar.</p>}
               <PriceNotice />
-              <Button size="lg" className="w-full" onClick={() => setReq(true)}>Solicitar pedido</Button>
-              {req && (
-                <div className="rounded-2xl border border-primary/30 p-4 text-sm" role="status">
-                  <p className="font-semibold">El pedido todavía no fue enviado.</p>
-                  <p className="mt-1 text-muted-foreground">Por ahora los pedidos se coordinan de forma directa. Copiá este resumen y compartilo por el canal de contacto; te confirmaremos precio final, disponibilidad y entrega.</p>
-                  <pre className="mt-3 whitespace-pre-wrap rounded-xl bg-muted p-3 font-sans text-xs">{summary}</pre>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <Button size="sm" variant="outline" onClick={() => navigator.clipboard?.writeText(summary)}>Copiar resumen</Button>
-                    <Button size="sm" asChild variant="link"><Link to="/contacto">Ver contacto</Link></Button>
-                  </div>
-                </div>
+              {whatsappUrl ? (
+                <Button size="lg" className="w-full" asChild>
+                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"><Send className="h-4 w-4" /> Consultar por WhatsApp</a>
+                </Button>
+              ) : (
+                <Button size="lg" className="w-full" onClick={share}><Share2 className="h-4 w-4" /> Compartir consulta de pedido</Button>
               )}
+              <Button size="lg" variant="outline" className="w-full" onClick={copy}><ClipboardCopy className="h-4 w-4" /> Copiar resumen</Button>
+              <p className="text-xs leading-relaxed text-muted-foreground">Todavía no se realiza ninguna compra ni se envía un pedido a MiniGains desde esta web. Compartí la consulta y esperá confirmación de precios y disponibilidad.</p>
+              {feedback && <p role="status" className="rounded-xl bg-accent px-3 py-2 text-sm text-accent-foreground">{feedback}</p>}
+              <details className="rounded-xl border border-border p-3 text-sm">
+                <summary className="cursor-pointer font-semibold">Ver texto del pedido</summary>
+                <pre className="mt-3 whitespace-pre-wrap break-words font-sans text-xs">{summary}</pre>
+              </details>
             </aside>
           </div>
         )}

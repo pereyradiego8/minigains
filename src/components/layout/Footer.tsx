@@ -18,7 +18,7 @@ export function Footer() {
         <nav aria-label="Categorías" className="md:col-span-3">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] opacity-70">Tienda</p>
           <ul className="mt-4 space-y-1 text-sm">
-            {CATEGORIES.map((c) => (
+            {CATEGORIES.filter((c) => c.delivery === "fisico").map((c) => (
               <li key={c.id}>
                 <Link to="/productos" search={{ categoria: c.id }} className="inline-flex min-h-9 items-center opacity-90 hover:opacity-100 hover:underline">
                   {c.name}
@@ -47,7 +47,7 @@ export function Footer() {
       </div>
       <div className="border-t border-cream/15">
         <p className="container-page py-6 text-xs opacity-75">
-          © {new Date().getFullYear()} MiniGains · Los precios publicados son de referencia y se confirman antes de cada pedido.
+          © {new Date().getFullYear()} MiniGains · Los precios publicados son históricos: consultá el valor vigente antes de comprar.
         </p>
       </div>
     </footer>
