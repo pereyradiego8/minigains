@@ -3,8 +3,7 @@ import { useState } from "react";
 import { Breadcrumbs } from "@/components/layout/PageIntro";
 import { ProductImage } from "@/components/product/ProductImage";
 import { ProductGrid } from "@/components/product/ProductCard";
-import { QtyStepper, PriceNotice } from "@/components/cart/CartLines";
-import { Button } from "@/components/ui/button";
+import { PriceNotice } from "@/components/cart/CartLines";
 import { getProduct, getRelated, getVariants, excerpt } from "@/data/catalog";
 import { getCategory } from "@/data/categories";
 import { formatARS } from "@/lib/format";
@@ -34,7 +33,6 @@ function ProductPage() {
   const { slug } = Route.useLoaderData();
   const p = getProduct(slug)!;
   const [img, setImg] = useState(0);
-  const [qty, setQty] = useState(1);
   const variants = getVariants(p);
   const cat = getCategory(p.category);
 
@@ -75,8 +73,7 @@ function ProductPage() {
           )}
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <QtyStepper value={qty} onChange={(n) => setQty(Math.max(1, n))} label={p.name} />
-            <AddToCartButton slug={p.slug} name={p.name} quantity={qty} variant="full" />
+            <AddToCartButton slug={p.slug} name={p.name} variant="full" />
           </div>
           <div className="mt-4"><PriceNotice /></div>
 

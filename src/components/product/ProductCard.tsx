@@ -34,7 +34,7 @@ export function ProductCard({ product }: { product: Product }) {
             {product.name}
           </Link>
         </h3>
-        <div className="mt-auto flex items-center justify-between gap-2 pt-2">
+        <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-2">
           <p className="text-sm font-semibold sm:text-base">
             {formatARS(product.referencePrice)}
             <span className="sr-only"> (precio de referencia)</span>
