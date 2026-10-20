@@ -1,4 +1,5 @@
 import { applySecurityHeaders } from "./lib/security-headers";
+import { handleMercadoPago } from "./lib/mercadopago";
 import { renderErrorPage } from "./lib/error-page";
 
 type ServerEntry = {
@@ -45,6 +46,8 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      const mpResponse = await handleMercadoPago(request, env);
+      if (mpResponse) return applySecurityHeaders(request, mpResponse);
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return applySecurityHeaders(request, await normalizeCatastrophicSsrResponse(response));

@@ -5,6 +5,13 @@
   "compatibility_date": "2026-10-19",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
+  "d1_databases": [
+    {
+      "binding": "ORDERS_DB",
+      "database_name": "minigains-orders",
+      "database_id": "b3658efc-e39c-4de5-ac10-00fad5e6240f"
+    }
+  ],
   "observability": {
     "enabled": true
   }

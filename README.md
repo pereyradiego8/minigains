@@ -90,3 +90,24 @@ El botón del carrito abre la función nativa de compartir del dispositivo (o co
 Al disponer del **WhatsApp oficial de MiniGains**, configurá `VITE_WHATSAPP_NUMBER` solo en las variables de build de Cloudflare, con el código de país y sin prefijo `+`. Volvé a desplegar. El sitio genera entonces enlaces `wa.me` con el pedido y contactos directos. Este dato no es secreto, pero **no usar contactos de otros negocios**.
 
 El dominio comercial `VITE_SITE_URL` y las fotografías alojadas en recursos propios siguen pendientes. No migrar imágenes de terceros a R2 sin permiso de uso; crear un bucket puede implicar cargos. Hasta entonces se mantienen las URL originales y su tratamiento de errores.
+
+## Mercado Pago Checkout Pro (integración pendiente de habilitar)
+
+**Cobros desactivados.** El Worker tiene backend, base D1 y página de resultados preparados, pero faltan credenciales del comercio, pruebas de pago y precios actuales. El carrito por WhatsApp permanece funcional.
+
+- D1: `minigains-orders`, binding `ORDERS_DB` configurado en `wrangler.jsonc`.
+- SQL de órdenes: `migrations/0001_checkout_orders.sql`, ya aplicado a la base remota.
+- Rutas: `GET /api/mercadopago/config`, `POST /api/mercadopago/checkout`, `POST /api/mercadopago/webhook`, `GET /api/mercadopago/status?pedido=<UUID>`.
+- Retorno web: `/pago?pedido=<UUID>`. Ningún parámetro del navegador puede marcar un pago como aprobado.
+
+### Configuración en Mercado Pago
+
+1. Crear una aplicación de Checkout Pro en [Mercado Pago Developers](https://www.mercadopago.com.ar/developers/), asociada a la cuenta que cobrará.
+2. En Cloudflare Workers → `minigains` → **Settings → Variables and Secrets**, cargar los secretos **runtime** `MP_ACCESS_TOKEN` y `MP_WEBHOOK_SECRET`, primero con valores de **prueba**. **Nunca** colocarlos en GitHub, en `.env.example`, ni en variables que empiecen por `VITE_`.
+3. En Mercado Pago Developers configurar el evento **Pagos** con la URL webhook HTTPS:
+   `https://minigains.8pereyradiego8.workers.dev/api/mercadopago/webhook`.
+4. Configurar variables **runtime** `MP_MODE=test`, `MP_ENABLED=true` para pruebas; luego `MP_MODE=production`, `MP_LIVE_CONFIRMED=true` y `MP_SHIPPING_READY=true` **solo cuando el vendedor apruebe precios, modalidad y costo de envío/retiro**.
+5. Actualizar `src/data/commerce-overrides.json` con `currentPrice` y `status=disponible` verificados para productos concretos. El backend rechaza productos sin precio vigente y suma cada cantidad usando únicamente valores del servidor.
+6. Probar con cuentas y tarjetas de prueba: aprobado, pendiente, rechazado, devolución, firma adulterada y webhook repetido. No activar cobros productivos sin pasar estos casos.
+
+**Limitaciones:** no se capturan datos de tarjeta en MiniGains; Mercado Pago procesa el pago. El backend registra estados en D1. La tienda todavía no automatiza inventario, envío, facturación o notificación saliente del pedido al vendedor. La producción requiere resolver esos procesos comerciales y controlar los límites/cuotas de D1.

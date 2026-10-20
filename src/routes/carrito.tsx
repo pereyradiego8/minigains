@@ -4,6 +4,7 @@ import { ClipboardCopy, Send, Share2 } from "lucide-react";
 import { PageIntro } from "@/components/layout/PageIntro";
 import { CartLines, PriceNotice } from "@/components/cart/CartLines";
 import { Button } from "@/components/ui/button";
+import { MercadoPagoCheckout } from "@/components/cart/MercadoPagoCheckout";
 import { useCart } from "@/hooks/cart";
 import { formatARS } from "@/lib/format";
 import { orderSummary, whatsAppLink } from "@/lib/store-contact";
@@ -60,6 +61,7 @@ function CartPage() {
               <div className="flex items-baseline justify-between gap-4"><span>Subtotal de referencia</span><span className="font-display text-3xl">{formatARS(subtotal)}</span></div>
               {unpriced > 0 && <p className="text-xs text-muted-foreground">{unpriced} producto(s) con precio a consultar.</p>}
               <PriceNotice />
+              <MercadoPagoCheckout />
               {whatsappUrl ? (
                 <Button size="lg" className="w-full" asChild>
                   <a href={whatsappUrl} target="_blank" rel="noopener noreferrer"><Send className="h-4 w-4" /> Consultar por WhatsApp</a>
