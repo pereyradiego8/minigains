@@ -41,14 +41,14 @@ function Catalog() {
         <p>{cat?.description ?? "Recetas artesanales para desayunos, meriendas y celebraciones. Precios de referencia, a confirmar en cada pedido."}</p>
       </PageIntro>
       <div className="container-page">
-        <div className="sticky top-16 z-30 -mx-[clamp(1rem,4vw,3rem)] mb-8 border-y border-border/70 bg-background/90 px-[clamp(1rem,4vw,3rem)] py-3 backdrop-blur lg:top-[4.5rem]">
+        <div className="sticky top-[7.75rem] z-30 md:top-16 -mx-[clamp(1rem,4vw,3rem)] mb-8 border-y border-border/70 bg-background/90 px-[clamp(1rem,4vw,3rem)] py-3 backdrop-blur lg:top-[4.5rem]">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
             <label className="relative lg:w-72">
               <span className="sr-only">Buscar en el catálogo</span>
               <input type="search" value={q} maxLength={60} onChange={(e) => set({ q: e.target.value || undefined })} placeholder="Buscar…" className="h-11 w-full rounded-full border border-input bg-card px-4 text-sm focus:border-primary focus:outline-none" />
             </label>
             <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 [scrollbar-width:none]" role="group" aria-label="Filtrar por categoría">
-              {[{ id: undefined, short: "Todo" }, ...CATEGORIES].map((c) => (
+              {[{ id: undefined, short: "Todo" }, ...CATEGORIES.filter((category) => category.delivery === "fisico")].map((c) => (
                 <button key={c.short} type="button" aria-pressed={categoria === c.id} onClick={() => set({ categoria: c.id as CategoryId | undefined })}
                   className={cn("min-h-11 shrink-0 rounded-full border px-4 text-sm transition-colors", categoria === c.id ? "border-primary bg-primary text-primary-foreground" : "border-input hover:border-primary/60")}>
                   {c.short}

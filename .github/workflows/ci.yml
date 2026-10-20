@@ -34,6 +34,8 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Bloquear vulnerabilidades moderadas, altas o críticas
         run: bun audit --audit-level=moderate
+      - name: Validar datos comerciales
+        run: bun scripts/catalog-admin.mjs check
       - name: Comprobar tipos
         run: bunx tsc --noEmit
       - name: Analizar código

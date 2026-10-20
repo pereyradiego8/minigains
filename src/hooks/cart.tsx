@@ -29,7 +29,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      setRaw(parseStoredCart(localStorage.getItem(CART_STORAGE_KEY), (s) => !!getProduct(s)));
+      setRaw(parseStoredCart(localStorage.getItem(CART_STORAGE_KEY), (s) => !!getProduct(s) && getProduct(s)?.availability !== "agotado"));
     } catch {
       // Navegadores con almacenamiento restringido deben mantener el carrito en memoria.
       setRaw([]);
@@ -47,7 +47,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [raw, hydrated]);
 
   const add = useCallback((slug: string, qty = 1) => {
-    if (!getProduct(slug)) return;
+    if (!getProduct(slug) || getProduct(slug)?.availability === "agotado") return;
     setRaw((l) => addLine(l, slug, qty));
     setAnnouncement(`${getProduct(slug)?.name ?? "Producto"} agregado al carrito`);
     // Abrir el carrito es una decisión explícita del cliente (icono del encabezado).
@@ -62,9 +62,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const value = useMemo<CartCtx>(() => {
     const lines = raw.flatMap((l) => {
       const product = getProduct(l.slug);
-      return product ? [{ ...l, product }] : [];
+      return product && product.availability !== "agotado" ? [{ ...l, product }] : [];
     });
-    const t = computeTotals(raw, (s) => getProduct(s)?.referencePrice);
+    const t = computeTotals(raw, (s) => getProduct(s)?.currentPrice ?? getProduct(s)?.referencePrice);
     return { lines, ...t, open, setOpen, add, setQty, remove, clear, announcement };
   }, [raw, open, add, setQty, remove, clear, announcement]);
 

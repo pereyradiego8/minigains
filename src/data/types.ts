@@ -23,6 +23,10 @@ export interface Product {
   category: CategoryId;
   /** Snapshot del sitio anterior. NO es precio de venta final. null = "Consultar". */
   referencePrice: number | null;
+  /** Precio vigente verificado, o null si no fue actualizado. */
+  currentPrice?: number | null;
+  /** Disponibilidad confirmada manualmente. */
+  availability?: "consultar" | "disponible" | "agotado";
   images: string[];
   /** Texto plano extraído del mirror (sin HTML). */
   description: string;

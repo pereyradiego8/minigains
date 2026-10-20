@@ -11,6 +11,8 @@ describe("security headers de respuestas SSR", () => {
     expect(await res.text()).toBe("hola");
     expect(res.headers.get("content-type")).toBe("text/plain");
     expect(res.headers.get("X-Content-Type-Options")).toBe("nosniff");
+    expect(res.headers.get("X-Frame-Options")).toBe("DENY");
+    expect(res.headers.get("Content-Security-Policy")).toContain("frame-ancestors 'none'");
     expect(res.headers.get("Strict-Transport-Security")).toBe("max-age=31536000");
   });
 

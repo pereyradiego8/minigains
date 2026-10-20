@@ -35,6 +35,7 @@ function ProductPage() {
   const [img, setImg] = useState(0);
   const variants = getVariants(p);
   const cat = getCategory(p.category);
+  const displayPrice = p.currentPrice ?? p.referencePrice;
 
   return (
     <div className="container-page pt-8">
@@ -55,8 +56,8 @@ function ProductPage() {
         <div className="lg:col-span-5 lg:pt-4">
           <p className="eyebrow">{cat?.name}</p>
           <h1 className="text-h1 mt-3">{p.name}</h1>
-          <p className="mt-5 font-display text-3xl">{formatARS(p.referencePrice)}</p>
-          <p className="text-xs text-muted-foreground">Precio de referencia · se confirma al coordinar</p>
+          <p className="mt-5 font-display text-3xl">{formatARS(displayPrice)}</p>
+          <p className="text-xs text-muted-foreground">{p.currentPrice != null ? "Precio informado · sujeto a confirmación" : "Referencia histórica · confirmar valor vigente"}</p>
 
           {variants.length > 1 && (
             <fieldset className="mt-8">
@@ -65,7 +66,7 @@ function ProductPage() {
                 {variants.map((v) => (
                   <Link key={v.slug} to="/productos/$slug" params={{ slug: v.slug }} aria-current={v.slug === p.slug ? "page" : undefined}
                     className={cn("inline-flex min-h-11 items-center rounded-full border px-5 text-sm", v.slug === p.slug ? "border-primary bg-primary text-primary-foreground" : "border-input hover:border-primary/60")}>
-                    {v.variantLabel} · {formatARS(v.referencePrice)}
+                    {v.variantLabel} · {formatARS(v.currentPrice ?? v.referencePrice)}
                   </Link>
                 ))}
               </div>
@@ -73,7 +74,9 @@ function ProductPage() {
           )}
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <AddToCartButton slug={p.slug} name={p.name} variant="full" />
+            {p.availability === "agotado"
+              ? <p className="rounded-xl bg-muted px-5 py-3 font-semibold text-muted-foreground">Sin disponibilidad por el momento</p>
+              : <AddToCartButton slug={p.slug} name={p.name} variant="full" />}
           </div>
           <div className="mt-4"><PriceNotice /></div>
 

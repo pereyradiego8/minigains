@@ -47,7 +47,8 @@ export function Header() {
     <>
       <div className="bg-primary text-primary-foreground">
         <p className="container-page py-2 text-center text-xs tracking-wide">
-          Elaboración artesanal · Opciones sin TACC · Pedidos coordinados por mensaje
+          <span className="sm:hidden">Elaboración artesanal · Hecho a mano</span>
+          <span className="hidden sm:inline">Elaboración artesanal · Opciones sin TACC · Consultas de pedidos</span>
         </p>
       </div>
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/85 backdrop-blur-md">
@@ -72,7 +73,7 @@ export function Header() {
               </nav>
               <p className="eyebrow mt-8">Categorías</p>
               <ul className="mt-3 flex flex-col">
-                {CATEGORIES.map((c) => (
+                {CATEGORIES.filter((c) => c.delivery === "fisico").map((c) => (
                   <li key={c.id}>
                     <Link to="/productos" search={{ categoria: c.id }} onClick={() => setMenu(false)} className="flex min-h-11 items-center text-sm hover:text-primary">
                       {c.name}
@@ -107,6 +108,9 @@ export function Header() {
               </span>
             )}
           </button>
+        </div>
+        <div className="border-t border-border/50 px-4 py-2 md:hidden">
+          <SearchBox id="search-mobile-header" />
         </div>
       </header>
     </>
