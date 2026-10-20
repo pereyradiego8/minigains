@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, Plus } from "lucide-react";
+import { Check, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/cart";
+import { MAX_QTY } from "@/lib/cart-math";
 
 /**
- * Feedback en el propio botón: no tapa el catálogo ni impide seguir agregando.
- * Un segundo clic reinicia el temporizador en lugar de perder la confirmación.
+ * El botón "+" pasa a un contador interactivo que refleja el carrito REAL.
+ * El estado vive en CartProvider, por lo que no se desincroniza entre tarjetas,
+ * ficha, carrito lateral y almacenamiento local.
  */
 export function AddToCartButton({
   slug, name, quantity = 1, variant = "icon",
@@ -15,7 +17,8 @@ export function AddToCartButton({
   quantity?: number;
   variant?: "icon" | "full";
 }) {
-  const { add } = useCart();
+  const { add, lines, setQty } = useCart();
+  const inCart = lines.find((line) => line.slug === slug)?.qty ?? 0;
   const [added, setAdded] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -23,14 +26,30 @@ export function AddToCartButton({
     if (timer.current !== null) clearTimeout(timer.current);
   }, []);
 
-  const handleAdd = () => {
-    add(slug, quantity);
+  const confirm = () => {
     setAdded(true);
     if (timer.current !== null) clearTimeout(timer.current);
     timer.current = setTimeout(() => {
       setAdded(false);
       timer.current = null;
     }, 1500);
+  };
+
+  const handleAdd = () => {
+    if (inCart >= MAX_QTY) return;
+    add(slug, Math.min(quantity, MAX_QTY - inCart));
+    confirm();
+  };
+
+  const handleIncrease = () => {
+    if (inCart >= MAX_QTY) return;
+    add(slug, 1);
+    confirm();
+  };
+
+  const handleDecrease = () => {
+    setQty(slug, inCart - 1);
+    if (inCart === 1) setAdded(false);
   };
 
   const bubble = (
@@ -42,13 +61,46 @@ export function AddToCartButton({
     </span>
   );
 
+  if (inCart > 0) {
+    return (
+      <div className={variant === "full" ? "relative min-w-44 flex-1" : "relative w-full min-w-0"}>
+        {bubble}
+        <div
+          role="group"
+          aria-label={`Cantidad de ${name} en el carrito`}
+          className="flex h-11 w-full items-center justify-between overflow-hidden rounded-full border border-primary/40 bg-card text-primary"
+        >
+          <button
+            type="button"
+            onClick={handleDecrease}
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full transition-colors hover:bg-accent focus-visible:outline-offset-[-3px]"
+            aria-label={`Restar una unidad de ${name}`}
+          >
+            <Minus className="h-4 w-4" aria-hidden="true" />
+          </button>
+          <span className="min-w-6 flex-1 text-center text-sm font-bold tabular-nums" aria-live="polite">
+            {inCart}
+          </span>
+          <button
+            type="button"
+            onClick={handleIncrease}
+            disabled={inCart >= MAX_QTY}
+            className="grid h-11 w-11 shrink-0 place-items-center rounded-full transition-colors hover:bg-accent focus-visible:outline-offset-[-3px] disabled:cursor-not-allowed disabled:opacity-40"
+            aria-label={`Agregar una unidad de ${name}`}
+          >
+            <Plus className="h-4 w-4" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (variant === "full") {
     return (
       <div className="relative min-w-44 flex-1">
         {bubble}
         <Button type="button" size="lg" onClick={handleAdd} className="w-full">
-          {added ? <Check className="h-4 w-4" aria-hidden="true" /> : <Plus className="h-4 w-4" aria-hidden="true" />}
-          {added ? "¡Agregado!" : "Agregar al carrito"}
+          <Plus className="h-4 w-4" aria-hidden="true" /> Agregar al carrito
         </Button>
       </div>
     );
@@ -63,7 +115,7 @@ export function AddToCartButton({
         className="grid h-11 w-11 place-items-center rounded-full border border-primary/25 text-primary transition-colors hover:bg-primary hover:text-primary-foreground focus-visible:outline-offset-2"
         aria-label={`Agregar ${name} al carrito`}
       >
-        {added ? <Check className="h-4 w-4" aria-hidden="true" /> : <Plus className="h-4 w-4" aria-hidden="true" />}
+        <Plus className="h-4 w-4" aria-hidden="true" />
       </button>
     </div>
   );
