@@ -94,7 +94,7 @@ export async function checkMpWebhookSignature(
   if (!Number.isSafeInteger(timestamp) || Math.abs(now - timestamp) > 15 * 60_000) return false;
   const manifest = "id:" + paymentId.toLowerCase() + ";request-id:" + requestId + ";ts:" + ts + ";";
   const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
-  const hexBytes = new Uint8Array((hash.match(/.{2}/g) ?? []).map((part) => Number.parseInt(part, 16)));
+  const hexBytes = new Uint8Array((hash.match(/.{2}/g) ?? []).map((part: string) => Number.parseInt(part, 16)));
   return crypto.subtle.verify("HMAC", key, hexBytes, new TextEncoder().encode(manifest));
 }
 

@@ -36,14 +36,14 @@ jobs:
         run: bun audit --audit-level=moderate
       - name: Validar datos comerciales
         run: bun scripts/catalog-admin.mjs check
+      - name: Compilar producción
+        run: bun run build
       - name: Comprobar tipos
         run: bunx tsc --noEmit
       - name: Analizar código
         run: bun run lint
       - name: Ejecutar tests
         run: bun run test
-      - name: Compilar producción
-        run: bun run build
       - name: Respetar presupuesto de recursos web
         run: node scripts/check-bundle-budget.mjs
       - name: Verificar paquete de despliegue Cloudflare sin publicar
